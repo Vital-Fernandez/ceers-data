@@ -68,7 +68,7 @@ def nirspec_load_function(log_df, id_spec, **kwargs):
     file_spec = Path(kwargs['fits_folder'])/log_df.loc[id_spec].file_path
 
     # 1d files
-    if file_spec.as_posix().endswith('_x1d_masked.fits'):
+    if "x1d" in file_spec.as_posix():
         wave, flux, err, header = load_nirspec_fits(file_spec)
         norm_flux = kwargs['norm_flux']
 

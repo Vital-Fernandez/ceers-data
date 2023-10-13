@@ -70,4 +70,4 @@ validators==0.21.2
 watchdog==3.0.0
 xyzservices==2023.7.0
 zipp==3.16.2
-lime-stable==0.9.85
+lime-stable==0.9.91

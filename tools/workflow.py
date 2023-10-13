@@ -205,8 +205,8 @@ def MPT_filtering(log, idcs_in):
 
             user_MPTs = user_MPT_to_numpy(s_state['MPTUSERLIT'])
 
-            idcs_selection = log['MPT'].isin(user_MPTs)
-            MPT_found = log.loc[idcs_selection, 'MPT'].unique()
+            idcs_selection = log['MSA'].isin(user_MPTs)
+            MPT_found = log.loc[idcs_selection, 'MSA'].unique()
             MPT_common = np.intersect1d(MPT_found, user_MPTs)
 
             if np.sum(MPT_common) > 0:
@@ -247,8 +247,8 @@ def line_filtering(log_files, log_lines, idcs_in):
             idcs_out = idcs_in
         else:
             idcs_line = log_lines.index.get_level_values('line').isin([s_state["LINEID"]])
-            mpt_list = log_lines.loc[idcs_line].MSA.unique()
-            idcs_out = idcs_in & log_files.MPT.isin(mpt_list)
+            mpt_list = log_lines.loc[idcs_line].index.get_level_values('id').unique()
+            idcs_out = idcs_in & log_files.MSA.isin(mpt_list)
 
         n_MPTs = log_files.loc[idcs_out].MSA.unique().size
         n_files = log_files.loc[idcs_out].index.get_level_values('file').str.contains('x1d').size

@@ -115,7 +115,6 @@ def flux_scatter(log, ratio_x, ratio_y):
     source = ColumnDataSource(data=data_dict)
 
     # st.write(data_dict['ratio_y_low'])
-    st.write(ratio_y)
     fig.add_layout(Whisker(dimension='height', base=ratio_x, upper='ratio_y_up', lower='ratio_y_low', source=source))
     fig.add_layout(Whisker(dimension='width', base=ratio_y, upper='ratio_x_up', lower='ratio_x_low', source=source))
     fig.scatter(ratio_x, ratio_y, source=source, alpha=0.7, size=10)
@@ -149,6 +148,7 @@ def plot_fits_2d(flux_image, wave, limits):
         fig.ray(x=wave[0], y=limits[1], length=wave[-1]-wave[0], angle=0, color='black', line_width=1, line_dash="dashed")
 
     return fig
+
 
 # Display 1D spectrum
 def display_1d_spec(files_sample, idcs_in):

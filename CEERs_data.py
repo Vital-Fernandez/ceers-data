@@ -56,7 +56,7 @@ def run():
         with col_logo:
             logo_address = Path(f'format/CEERS_white.png')
             image = logo_load(logo_address)
-            st.image(image, width=400)
+            st.image(image, width=300)
 
         with col_welcome:
             welcome_message = f'# Welcome to the CEERs data release'
@@ -84,6 +84,5 @@ def run():
 
 if __name__ == "__main__":
     run()
-
 
 

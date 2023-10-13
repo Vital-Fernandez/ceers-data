@@ -20,8 +20,13 @@ def grid_display(sample_files, sample_fluxes):
 
         # Plot
         st.markdown(f'* **Reduction:** {idx_obs[0]}. **File:** {idx_obs[2]}')
-        fig_grid = plt.figure(tight_layout=True)
-        st.pyplot(spec.plot.grid(in_fig=fig_grid, n_cols=2, fig_cfg={'axes.titlesize': 10}, col_row_scale=(1, 3)))
+        fig_grid = plt.figure(tight_layout=True,
+                              figsize=(3 * 2, 1.5 + 1.5 * int(spec.log.index.size/3)),
+                              dpi=200)
+        # fig_grid = plt.figure(f)
+        st.pyplot(spec.plot.grid(in_fig=fig_grid, n_cols=3,
+                                 fig_cfg={'axes.titlesize': 8},
+                                 col_row_scale=(1, 1)))
 
     return
 

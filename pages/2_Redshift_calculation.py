@@ -59,8 +59,7 @@ if s_state['auth_status']:
         files_log_selection = files_sample.log
         lines_log_selection = lines_sample.log
 
-    z_df = lime.redshift_calculation(lines_log_selection, line_list=lines_list, weight_parameter=z_weight,
-                                     sample_levels=['sample', 'id', 'file', 'line'])
+    z_df = lime.redshift_calculation(lines_log_selection, line_list=lines_list, weight_parameter=z_weight)
 
     out_df = pd.DataFrame(index=z_df.index, columns=list(['pointing', 'disp'] + list(z_df.columns.to_numpy())))
 

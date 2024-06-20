@@ -46,12 +46,12 @@ if s_state['auth_status']:
     with single_tab:
 
         # Individual MPT selection
-        idcs_tabs = tabs_object_selection(files_sample.log, idcs_files)
+        idcs_tabs = tabs_object_selection(files_sample.frame, idcs_files)
 
         if idcs_files is not None:
 
             # Object information
-            rainbow_link(files_sample.log.loc[idcs_tabs])
+            rainbow_link(files_sample.frame.loc[idcs_tabs])
 
             # 1D Spectrum
             display_1d_spec(files_sample, idcs_tabs)
@@ -63,13 +63,13 @@ if s_state['auth_status']:
     with multiple_tab:
 
         # Individual MPT selection
-        idcs_tabs = tabs_object_selection(files_sample.log, idcs_files, just_objects=True, key_ID='MPT2')
+        idcs_tabs = tabs_object_selection(files_sample.frame, idcs_files, just_objects=True, key_ID='MPT2')
 
         # Object information
-        rainbow_link(files_sample.log.loc[idcs_tabs])
+        rainbow_link(files_sample.frame.loc[idcs_tabs])
 
         # 1D Spectrum
-        idcs_1d = idcs_tabs & files_sample.log['ext'].str.contains('x1d')
+        idcs_1d = idcs_tabs & files_sample.frame['ext'].str.contains('x1d')
         multi_spec_plot(files_sample[idcs_1d])
 
 # No user

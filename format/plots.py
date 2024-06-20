@@ -12,7 +12,7 @@ import itertools
 import pandas as pd
 
 from tools.io import FITS_PATH, hdr_to_df
-from lime.tools import UNITS_LATEX_DICT, latex_science_float
+from lime.plots import spectrum_figure_labels
 from astropy.visualization import ZScaleInterval, AsinhStretch, simple_norm, ImageNormalize
 from pathlib import Path
 
@@ -43,13 +43,18 @@ def plot_spectrum(spec):
 
     fig.step(x=spec.wave, y=spec.flux, mode="center")
 
-    units_wave = UNITS_LATEX_DICT[spec.units_wave].replace(r"\AA", "Å")
-    units_flux = UNITS_LATEX_DICT[spec.units_flux].replace(r"\AA", "Å")
-    norm_label = r' \,/\,{}'.format(latex_science_float(spec.norm_flux)) if spec.norm_flux != 1.0 else ''
+    x_label, y_label = spectrum_figure_labels(spec.units_wave, spec.units_flux, spec.norm_flux)
 
-    # fig.xaxis.axis_label = f'wavelength (Å)' if spec.units_wave == 'A' else f'$${UNITS_LATEX_DICT[spec.units_wave]}$$'
-    fig.xaxis.axis_label = r'$$\text{Wavelength }' + f'({units_wave}\,\,\,)$$'
-    fig.yaxis.axis_label = r'$$\text{Flux }' + f'({units_flux})' + f'{norm_label}$$'
+    # units_wave = UNITS_LATEX_DICT[spec.units_wave].replace(r"\AA", "Å")
+    # units_flux = UNITS_LATEX_DICT[spec.units_flux].replace(r"\AA", "Å")
+    # norm_label = r' \,/\,{}'.format(latex_science_float(spec.norm_flux)) if spec.norm_flux != 1.0 else ''
+    #
+    # # fig.xaxis.axis_label = f'wavelength (Å)' if spec.units_wave == 'A' else f'$${UNITS_LATEX_DICT[spec.units_wave]}$$'
+    # fig.xaxis.axis_label = r'$$\text{Wavelength }' + f'({units_wave}\,\,\,)$$'
+    # fig.yaxis.axis_label = r'$$\text{Flux }' + f'({units_flux})' + f'{norm_label}$$'
+
+    fig.xaxis.axis_label = x_label
+    fig.yaxis.axis_label = y_label
 
     return fig
 
@@ -75,12 +80,15 @@ def multi_spec_plot(files_sample):
             fig.step(x=spec.wave, y=spec.flux, mode="center", color=next(color), legend_label=label)
 
         # Wording
-        units_wave = UNITS_LATEX_DICT[spec.units_wave].replace(r"\AA", "Å")
-        units_flux = UNITS_LATEX_DICT[spec.units_flux].replace(r"\AA", "Å")
-        norm_label = r' \,/\,{}'.format(latex_science_float(spec.norm_flux)) if spec.norm_flux != 1.0 else ''
-
-        fig.xaxis.axis_label = r'$$\text{Wavelength }' + f'({units_wave}\,\,\,)$$'
-        fig.yaxis.axis_label = r'$$\text{Flux }' + f'({units_flux})' + f'{norm_label}$$'
+        x_label, y_label = spectrum_figure_labels(spec.units_wave, spec.units_flux, spec.norm_flux)
+        # units_wave = UNITS_LATEX_DICT[spec.units_wave].replace(r"\AA", "Å")
+        # units_flux = UNITS_LATEX_DICT[spec.units_flux].replace(r"\AA", "Å")
+        # norm_label = r' \,/\,{}'.format(latex_science_float(spec.norm_flux)) if spec.norm_flux != 1.0 else ''
+        #
+        # fig.xaxis.axis_label = r'$$\text{Wavelength }' + f'({units_wave}\,\,\,)$$'
+        # fig.yaxis.axis_label = r'$$\text{Flux }' + f'({units_flux})' + f'{norm_label}$$'
+        fig.xaxis.axis_label = x_label
+        fig.yaxis.axis_label = y_label
 
     # Display it
     st.bokeh_chart(fig)

@@ -12,17 +12,18 @@ def grid_display(sample_files, sample_fluxes):
 
     st.markdown(f'## Profile grid: ')
 
-    for idx_obs in sample_files.log.index:
+    for idx_obs in sample_files.frame.index:
 
         # Get data
         spec = sample_files.get_spectrum(idx_obs)
-        spec.load_log(sample_fluxes.log.xs(idx_obs, level=('sample', 'id', 'file')))
+        spec.load_frame(sample_fluxes.frame.xs(idx_obs, level=('sample', 'id', 'file')))
 
         # Plot
         st.markdown(f'* **Reduction:** {idx_obs[0]}. **File:** {idx_obs[2]}')
         fig_grid = plt.figure(tight_layout=True,
-                              figsize=(3 * 2, 1.5 + 1.5 * int(spec.log.index.size/3)),
+                              figsize=(3 * 2, 1.5 + 1.5 * int(spec.frame.index.size/3)),
                               dpi=200)
+
         # fig_grid = plt.figure(f)
         st.pyplot(spec.plot.grid(in_fig=fig_grid, n_cols=3,
                                  fig_cfg={'axes.titlesize': 8},
@@ -39,7 +40,7 @@ def line_display(files_sample, flux_log, line_list):
     # Loop through the observations
     for idx_obs in files_sample.index:
 
-        log = flux_log.log.xs(idx_obs, level=('sample', 'id', 'file'))
+        log = flux_log.frame.xs(idx_obs, level=('sample', 'id', 'file'))
 
         if line in log.index:
 
@@ -63,7 +64,7 @@ def table_display(files_sample, fluxes_sample):
 
     for i, idx_obs in enumerate(files_sample.index):
 
-        log_lines = fluxes_sample.log.xs(idx_obs, level=('sample', 'id', 'file'))
+        log_lines = fluxes_sample.frame.xs(idx_obs, level=('sample', 'id', 'file'))
         log_lines.index.name = None
 
         # Information (Just the first time)
@@ -106,12 +107,12 @@ if s_state['auth_status']:
     idcs_files, idcs_lines = sidebar_widgets(files_sample, lines_sample)
 
     # Second user selection
-    idcs_target = tabs_object_selection(files_sample.log, idcs_files, just_objects=True)
+    idcs_target = tabs_object_selection(files_sample.frame, idcs_files, just_objects=True)
 
     # Indexing objects with line measurements
-    idcs_lines_crop = lines_sample.log.index.droplevel('line')
-    idcs_target = idcs_target & files_sample.log.index.isin(idcs_lines_crop)
-    idcs_lines = idcs_lines_crop.isin(files_sample.log.loc[idcs_target].index)
+    idcs_lines_crop = lines_sample.frame.index.droplevel('line')
+    idcs_target = idcs_target & files_sample.frame.index.isin(idcs_lines_crop)
+    idcs_lines = idcs_lines_crop.isin(files_sample.frame.loc[idcs_target].index)
 
     # Check for measurements
     id_lines_list = idcs_target
@@ -128,7 +129,7 @@ if s_state['auth_status']:
 
         # Line fitting display
         with line_tab:
-            lines_selection = sort(lines_sample.log.loc[idcs_lines].index.get_level_values('line').unique())
+            lines_selection = sort(lines_sample.frame.loc[idcs_lines].index.get_level_values('line').unique())
             line_display(files_sample[idcs_target], lines_sample, lines_selection)
 
         # Table measurements

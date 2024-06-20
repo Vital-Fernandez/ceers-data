@@ -294,22 +294,22 @@ def sidebar_widgets(files_sample, lines_sample):
     with st.sidebar:
 
         # Observation filtering
-        observation_properties_filtering(files_sample.log)
+        observation_properties_filtering(files_sample.frame)
 
         # Observation selection
-        idcs_obs = observation_indexing(files_sample.log)
+        idcs_obs = observation_indexing(files_sample.frame)
 
         # Object selection
-        idcs_objs = MPT_filtering(files_sample.log, idcs_obs)
+        idcs_objs = MPT_filtering(files_sample.frame, idcs_obs)
 
         # Line selection
-        idcs_objs = line_filtering(files_sample.log, lines_sample.log, idcs_objs)
+        idcs_objs = line_filtering(files_sample.frame, lines_sample.frame, idcs_objs)
         s_state['OBJLIST'] = idcs_objs
 
         # Indexing objects with line measurements
-        idcs_lines_crop = lines_sample.log.index.droplevel('line')
-        idcs_target = idcs_objs & files_sample.log.index.isin(idcs_lines_crop)
-        idcs_lines = idcs_lines_crop.isin(files_sample.log.loc[idcs_target].index)
+        idcs_lines_crop = lines_sample.frame.index.droplevel('line')
+        idcs_target = idcs_objs & files_sample.frame.index.isin(idcs_lines_crop)
+        idcs_lines = idcs_lines_crop.isin(files_sample.frame.loc[idcs_target].index)
 
         # unique_sample = files_sample.log.loc[idcs_objs].index.get_level_values('sample').unique()
         # unique_id = files_sample.log.loc[idcs_objs].index.get_level_values('id').unique()

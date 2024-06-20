@@ -25,9 +25,9 @@ if s_state['auth_status']:
     idcs_files, idcs_lines = sidebar_widgets(files_sample, lines_sample)
 
     # Indexing objects with line measurements
-    idcs_lines_crop = lines_sample.log.index.droplevel('line')
-    idcs_target = idcs_files & files_sample.log.index.isin(idcs_lines_crop)
-    idcs_lines = idcs_lines_crop.isin(files_sample.log.loc[idcs_target].index)
+    idcs_lines_crop = lines_sample.frame.index.droplevel('line')
+    idcs_target = idcs_files & files_sample.frame.index.isin(idcs_lines_crop)
+    idcs_lines = idcs_lines_crop.isin(files_sample.frame.loc[idcs_target].index)
 
     # Object selection widgets
     col_line_selection, col_params_selection = st.columns(2)
@@ -52,12 +52,12 @@ if s_state['auth_status']:
 
     # Constrain the selection
     if any(idcs_target):
-        files_log_selection = files_sample.log.loc[idcs_target]
-        lines_log_selection = lines_sample.log.loc[idcs_lines]
+        files_log_selection = files_sample.frame.loc[idcs_target]
+        lines_log_selection = lines_sample.frame.loc[idcs_lines]
 
     else:
-        files_log_selection = files_sample.log
-        lines_log_selection = lines_sample.log
+        files_log_selection = files_sample.frame
+        lines_log_selection = lines_sample.frame
 
     z_df = lime.redshift_calculation(lines_log_selection, line_list=lines_list, weight_parameter=z_weight)
 

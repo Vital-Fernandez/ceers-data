@@ -62,10 +62,11 @@ def load_nirspec_fits(file_address, ext=None):
     return wave_array, flux_array, err_array, header
 
 
-def nirspec_load_function(log_df, id_spec, **kwargs):
+def nirspec_load_function(log_df, id_spec, root_address, **kwargs):
 
     z_obj = log_df.loc[id_spec].redshift
-    file_spec = Path(kwargs['fits_folder'])/log_df.loc[id_spec].file_path
+    file_spec = Path(root_address)/log_df.loc[id_spec].file_path
+    st.write(f'Este file {file_spec}')
 
     # 1d files
     if "x1d" in file_spec.as_posix():
@@ -74,7 +75,7 @@ def nirspec_load_function(log_df, id_spec, **kwargs):
 
         mask = np.isnan(err) & np.isnan(flux)
         objSpec = lime.Spectrum(wave, flux, err, redshift=z_obj, units_wave='um', units_flux='Jy', pixel_mask=mask)
-        objSpec.unit_conversion(units_wave='A', units_flux='Flam', norm_flux=norm_flux)
+        objSpec.unit_conversion(wave_units_out='Angstrom', flux_units_out='FLAM', norm_flux=norm_flux)
         objSpec.header = header
 
     # 2d files
@@ -93,10 +94,12 @@ def load_databases(database_folder=None):
 
     # Generate sample logs and load the data
     files_sample = lime.Sample(database_folder/secrets.data.files_log_path, load_function=nirspec_load_function,
-                               levels=['sample', 'id', 'file'], norm_flux=1e-22, fits_folder=database_folder/f'data/spectra')
+                               folder_obs=database_folder / f'data/spectra',
+                               levels=['sample', 'id', 'file'], norm_flux=1e-22)
 
     lines_sample = lime.Sample(database_folder/secrets.data.fluxes_log_path, load_function=nirspec_load_function,
-                               levels=['sample', 'id', 'file', 'line'], norm_flux=1e-22, fits_folder=database_folder/f'data/spectra')
+                               folder_obs=database_folder / f'data/spectra',
+                               levels=['sample', 'id', 'file', 'line'], norm_flux=1e-22)
 
     return files_sample, lines_sample
 

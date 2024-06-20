@@ -13,7 +13,7 @@ files_sample = lime.Sample(files_log_address, load_function=nirspec_load_functio
 
 idx_tupples = [('CEERs_DR0.7', '0', 'hlsp_ceers_jwst_nirspec_nirspec5-000000_comb-mgrat_dr0.7_x1d_masked.fits'),
                ('CEERs_DR0.7', '0', 'hlsp_ceers_jwst_nirspec_nirspec5-000000_comb-mgrat_dr0.7_x1d_masked.fits')]
-idx_trues = (files_sample.log.MSA == 0) & (files_sample.log.ext == 'x1d') & (files_sample.log.disp == 'comb-mgrat')
+idx_trues = (files_sample.frame.MSA == 0) & (files_sample.frame.ext == 'x1d') & (files_sample.frame.disp == 'comb-mgrat')
 
 files_sample.loc[files_sample[idx_trues].index.values[0], 'redshift']
 files_sample.loc[('CEERs_DR0.7', 0, 'hlsp_ceers_jwst_nirspec_nirspec5-000000_comb-mgrat_dr0.7_x1d_masked.fits'), 'redshift']
@@ -21,7 +21,7 @@ files_sample.loc[('CEERs_DR0.7', 0, 'hlsp_ceers_jwst_nirspec_nirspec5-000000_com
 spec_1 = files_sample.get_spectrum(idx_trues)
 
 # files_sample.log.loc[idx_trues]
-for idx in files_sample.log[idx_trues].index:
+for idx in files_sample.frame[idx_trues].index:
     print(files_sample[idx_trues].index)
     spec2 = files_sample.get_spectrum(idx)
 

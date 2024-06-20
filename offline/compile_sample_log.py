@@ -337,11 +337,11 @@ def prepare_smacs_files(output_folder):
         id_list.append(id_label)
 
     smacs_fluxes = lime.Sample.from_file_list(id_list=id_list, log_list=log_list, file_list=file_list)
-    smacs_fluxes.log['id'] = smacs_fluxes.log.index.get_level_values('id')
-    smacs_fluxes.log['file'] = smacs_fluxes.log.index.get_level_values('file')
-    smacs_fluxes.log['line'] = smacs_fluxes.log.index.get_level_values('line')
-    smacs_fluxes.log['sample'] = 'SMACS'
-    smacs_fluxes.log.set_index(['sample', 'id', 'file', 'line'], inplace=True)
+    smacs_fluxes.frame['id'] = smacs_fluxes.frame.index.get_level_values('id')
+    smacs_fluxes.frame['file'] = smacs_fluxes.frame.index.get_level_values('file')
+    smacs_fluxes.frame['line'] = smacs_fluxes.frame.index.get_level_values('line')
+    smacs_fluxes.frame['sample'] = 'SMACS'
+    smacs_fluxes.frame.set_index(['sample', 'id', 'file', 'line'], inplace=True)
 
     smacs_fluxes.save_log(smacs_flux_log_file)
 

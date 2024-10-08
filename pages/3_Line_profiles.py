@@ -6,7 +6,8 @@ from numpy import sort, any
 from tools.workflow import sidebar_widgets, tabs_object_selection, user_logging
 from tools.io import load_databases
 from format.plots import figure_conversion
-
+import lime
+from pandas import MultiIndex
 
 def grid_display(sample_files, sample_fluxes):
 
@@ -15,7 +16,8 @@ def grid_display(sample_files, sample_fluxes):
     for idx_obs in sample_files.frame.index:
 
         # Get data
-        spec = sample_files.get_spectrum(idx_obs)
+        multi_index_entry = MultiIndex.from_tuples([idx_obs], names=sample_files.frame.index.names)
+        spec = sample_files.get_spectrum(multi_index_entry)
         spec.load_frame(sample_fluxes.frame.xs(idx_obs, level=('sample', 'id', 'file')))
 
         # Plot
@@ -43,9 +45,9 @@ def line_display(files_sample, flux_log, line_list):
         log = flux_log.frame.xs(idx_obs, level=('sample', 'id', 'file'))
 
         if line in log.index:
-
-            spec = files_sample.get_spectrum(idx_obs)
-            spec.load_log(log)
+            multi_index_entry = MultiIndex.from_tuples([idx_obs], names=files_sample.frame.index.names)
+            spec = files_sample.get_spectrum(multi_index_entry)
+            spec.load_frame(log)
 
             # Make the figure
             st.markdown(f'* **Reduction:** {idx_obs[0]}. **File:** {idx_obs[2]}')

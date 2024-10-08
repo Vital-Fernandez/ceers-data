@@ -75,7 +75,8 @@ def multi_spec_plot(files_sample):
 
         # Slice to 1d files
         for i, idx_obs in enumerate(files_sample.index):
-            spec = files_sample.get_spectrum(idx_obs)
+            multi_index_entry = pd.MultiIndex.from_tuples([idx_obs], names=files_sample.index.names)
+            spec = files_sample.get_spectrum(multi_index_entry)
             label = ", ".join(map(str, idx_obs))
             fig.step(x=spec.wave, y=spec.flux, mode="center", color=next(color), legend_label=label)
 
@@ -161,17 +162,9 @@ def plot_fits_2d(flux_image, wave, limits):
 # Display 1D spectrum
 def display_1d_spec(files_sample, idcs_in):
 
-    st.markdown(f'###  1D spectrum')
-
-    # Slice to 1d files
-    idcs_1d = idcs_in & files_sample.loc[idcs_in, 'ext'].str.contains('x1d')
-
-    # Show files
-    file_list = files_sample.loc[idcs_1d].index.get_level_values('file').to_numpy()
-    st.markdown(f'Spectra files in selection: {file_list}')
 
     # Recover the spectrum
-    spec1d = files_sample.get_spectrum(idcs_1d)
+    spec1d = files_sample.get_spectrum(idcs_in)
 
     # Spectra and header tabs geneartation
     spec1D_tab, hdr0_tab, hdr1_tab = st.tabs(['Spectrum', 'Header 0', 'Header 1'])
@@ -193,20 +186,19 @@ def display_1d_spec(files_sample, idcs_in):
 # Display 2D spectrum
 def display_2d_spec(files_sample, idcs_in, limits=None):
 
-    st.markdown(f'###  2D spectrum')
 
     # Slice to 2d files
-    idcs_2d = idcs_in & files_sample.loc[idcs_in, 'ext'].str.contains('s2d')
+    # idcs_2d = idcs_in & files_sample.loc[idcs_in, 'ext'].str.contains('s2d')
 
     # Show files
-    file_list = files_sample.loc[idcs_2d].index.get_level_values('file').to_numpy()
-    st.markdown(f'Spectra files in selection: {file_list}')
+    file_list = files_sample.loc[idcs_in].index.get_level_values('file').to_numpy()
+    # st.markdown(f'Spectra files in selection: {file_list}')
 
     # Recover the spectrum
 
     if len(file_list) > 0:
 
-        wave, e_flux, err, hdr_list = files_sample.get_spectrum(idcs_2d)
+        wave, e_flux, err, hdr_list = files_sample.get_spectrum(idcs_in)
 
         # fits2d_path = Path(__file__).parent.parent/'data/spectra'/path_list[0]
         # wave, e_flux, err, hdr_list = load_nirspec_fits(fits2d_path)

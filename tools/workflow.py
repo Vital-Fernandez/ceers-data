@@ -21,7 +21,7 @@ DEFAULTS = {'disp':         'G235M',
             'NUMLINE':      'None',
             'DENOLINE':     'None',
             'MPTUSERLIT':   '',
-            'sample_list':  ['CEERs_DR0.7'],
+            'sample_list':  ['CEERs_DR0.9'],
             'disp_list':    ['comb-mgrat', 'g140m', 'g235m', 'g395m', 'prism'],
             'point_list':   ['nirspec4', 'nirspec5', 'nirspec7', 'nirspec8', 'nirspec9', 'nirspec10', 'nirspec11', 'nirspec12']}
 
@@ -70,41 +70,53 @@ def tabs_object_selection(log, group_indeces, just_objects=False, key_ID = 'MPT'
     else:
 
         with objCol:
-            objList = np.sort(log.loc[group_indeces].MSA.unique())
+            objList = np.sort(log.loc[group_indeces, 'MSA_number'].unique())
             objSelect = st.selectbox('MSA', objList, key=key_ID)
 
         # If we want to select everything
         if not just_objects:
 
             with sampleCol:
-                idcs_subGroup = group_indeces & (log.MSA == objSelect)
+                idcs_subGroup = group_indeces & (log.MSA_number == objSelect)
                 sampleList = np.sort(log.loc[idcs_subGroup].index.get_level_values('sample').unique())
                 sampleSelect = st.selectbox('Sample', sampleList)
 
             with dispCol:
-                idcs_subGroup = group_indeces & (log.MSA == objSelect) & (
+                idcs_subGroup = group_indeces & (log.MSA_number == objSelect) & (
                             log.index.get_level_values('sample') == sampleSelect)
                 dispList = np.sort(log.loc[idcs_subGroup].disp.unique())
                 dispSelect = st.selectbox('Dispenser', dispList)
 
             with pointCol:
-                idcs_subGroup = group_indeces & (log.MSA == objSelect) & (
+                idcs_subGroup = group_indeces & (log.MSA_number == objSelect) & (
                             log.index.get_level_values('sample') == sampleSelect) & \
                                 (log.disp == dispSelect)
                 pointList = np.sort(log.loc[idcs_subGroup].pointing.unique())
                 pointSelect = st.selectbox('Pointing', pointList)
 
             # One object selection
-            idcs_out = group_indeces & (log.MSA == objSelect) \
+            idcs_out = group_indeces & (log.MSA_number == objSelect) \
                        & (log.index.get_level_values('sample') == sampleSelect) \
                        & (log.disp == dispSelect) \
                        & (log.pointing == pointSelect)
 
         else:
-            idcs_out = group_indeces & (log.MSA == objSelect)
+            idcs_out = group_indeces & (log.MSA_number == objSelect)
 
     return idcs_out
 
+
+def select_from_obj_list(idcs_tabs, files_sample, ext_type='1d'):
+
+    file_levels = files_sample.loc[idcs_tabs].index.get_level_values('file')
+    list_selection = file_levels[file_levels.str.contains(ext_type)].to_numpy()
+
+    # Widget
+    select_spec = st.selectbox('Spectrum file', list_selection)
+    files_sample.loc[idcs_tabs].index.get_level_values('file') == select_spec
+    output_index = files_sample.loc[idcs_tabs].xs(select_spec, level='file', drop_level=False).index
+
+    return output_index
 
 def user_MPT_to_numpy(str_list):
     output = str_list.replace('\n', '')
@@ -231,7 +243,7 @@ def line_filtering(log_files, log_lines, idcs_in):
     if idcs_in is not None:
 
         st.markdown(f'# Emission line detection:')
-        mpt_list = log_files.loc[idcs_in].MSA.unique()
+        mpt_list = log_files.loc[idcs_in].MSA_number.unique()
         idcs_MPT = log_lines.index.get_level_values('id').isin(mpt_list)
         line_list = ['Any'] + list(np.sort(log_lines.loc[idcs_MPT].index.get_level_values('line').unique()))
 
@@ -250,7 +262,7 @@ def line_filtering(log_files, log_lines, idcs_in):
             mpt_list = log_lines.loc[idcs_line].index.get_level_values('id').unique()
             idcs_out = idcs_in & log_files.MSA.isin(mpt_list)
 
-        n_MPTs = log_files.loc[idcs_out].MSA.unique().size
+        n_MPTs = log_files.loc[idcs_out].MSA_number.unique().size
         n_files = log_files.loc[idcs_out].index.get_level_values('file').str.contains('x1d').size
 
         if s_state["LINEID"] == 'Any':

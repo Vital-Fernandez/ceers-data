@@ -3,13 +3,13 @@ from streamlit import session_state as s_state
 
 from tools.io import load_databases, arcoiris_link #, read_appertures
 from format.plots import display_1d_spec, display_2d_spec, multi_spec_plot
-from tools.workflow import sidebar_widgets, tabs_object_selection, user_logging
+from tools.workflow import sidebar_widgets, tabs_object_selection, user_logging, select_from_obj_list
 
 
 # Display 1D spectrum
 def rainbow_link(files_log):
 
-    MPT = files_log['MSA'].to_numpy()
+    MPT = files_log['MSA_number'].to_numpy()
 
     if len(MPT) > 0:
 
@@ -53,12 +53,17 @@ if s_state['auth_status']:
             # Object information
             rainbow_link(files_sample.frame.loc[idcs_tabs])
 
-            # 1D Spectrum
-            display_1d_spec(files_sample, idcs_tabs)
+            # Refine the selection
+            st.markdown(f'###  1D spectrum')
+            idx_1d_selection = select_from_obj_list(idcs_tabs, files_sample, 'x1d')
+
+            # 1D Spectrumidcs_tabs
+            display_1d_spec(files_sample, idx_1d_selection)
 
             # 2D spectrum
-            appertures = None #read_appertures(files_sample.log.loc[idcs_tabs])
-            display_2d_spec(files_sample, idcs_tabs, appertures)
+            st.markdown(f'###  2D spectrum')
+            idx_2d_selection = select_from_obj_list(idcs_tabs, files_sample, 's2d')
+            display_2d_spec(files_sample, idx_2d_selection, limits=None)
 
     with multiple_tab:
 
@@ -69,7 +74,7 @@ if s_state['auth_status']:
         rainbow_link(files_sample.frame.loc[idcs_tabs])
 
         # 1D Spectrum
-        idcs_1d = idcs_tabs & files_sample.frame['ext'].str.contains('x1d')
+        idcs_1d = idcs_tabs & files_sample.frame['ext'].str.contains('x1d') & ~files_sample.frame['disp'].isin(['g140m', 'g235m', 'g395m'])
         multi_spec_plot(files_sample[idcs_1d])
 
 # No user

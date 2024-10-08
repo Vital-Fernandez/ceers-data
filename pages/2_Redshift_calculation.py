@@ -44,10 +44,10 @@ if s_state['auth_status']:
         lines_list = parse_str_list(lines_list, default_in='', default_out=None)
 
     with col_params_selection:
-        z_params_weight = ['None', 'intg_flux', 'gauss_flux', 'eqw']
+        z_params_weight = ['None', 'intg_flux', 'profile_flux', 'eqw']
         help_text = 'The equivalent width measurements high redshift observations have very large uncertainties.'
         z_weight = st.selectbox(label='Redshift weight parameter', options=z_params_weight, key='Z_WEIGHT',
-                           on_change=save_objSample, args=("Z_WEIGHT",), help=help_text)
+                                on_change=save_objSample, args=("Z_WEIGHT",), help=help_text)
         z_weight = None if z_weight == 'None' else z_weight
 
     # Constrain the selection
@@ -81,7 +81,7 @@ if s_state['auth_status']:
     # Download button
     with col_download:
         st.write(' \n')
-        string_DF = out_df.to_string()
+        string_DF = out_df.reset_index().to_string()
         st.download_button('Download', data=string_DF.encode('UTF-8'), file_name=f'CEERs_redshift_table.txt')
 
     # Generate slice to a df combining files and z

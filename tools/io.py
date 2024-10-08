@@ -64,15 +64,15 @@ def load_nirspec_fits(file_address, ext=None):
 
 def nirspec_load_function(log_df, id_spec, root_address, **kwargs):
 
-    z_obj = log_df.loc[id_spec].redshift
-    file_spec = Path(root_address)/log_df.loc[id_spec].file_path
-    st.write(f'Este file {file_spec}')
+    z_obj = log_df.loc[id_spec].redshift.values[0]
+    file_spec = Path(root_address)/log_df.loc[id_spec].file_path.values[0]
 
     # 1d files
     if "x1d" in file_spec.as_posix():
         wave, flux, err, header = load_nirspec_fits(file_spec)
         norm_flux = kwargs['norm_flux']
 
+        z_obj = None if np.isnan(z_obj) else z_obj
         mask = np.isnan(err) & np.isnan(flux)
         objSpec = lime.Spectrum(wave, flux, err, redshift=z_obj, units_wave='um', units_flux='Jy', pixel_mask=mask)
         objSpec.unit_conversion(wave_units_out='Angstrom', flux_units_out='FLAM', norm_flux=norm_flux)

@@ -23,7 +23,8 @@ INTRODUCTION_TEXT = (f'<p {text_format}> '
                      f'</p>')
 
 RELEASE_TEXT = (f'<p {text_format}> '
-                f'- The available data belongs to the CEERs Data release 0.7. You can download these spectra from this {dr07_link}.<br>'
+                f'- The available data belongs to the CEERs Data release 0.9'
+                # f'- The available data belongs to the CEERs Data release 0.9. You can download these spectra from this {dr07_link}.<br>'
                 f'</p>')
 
 

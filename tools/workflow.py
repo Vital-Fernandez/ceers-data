@@ -22,7 +22,7 @@ DEFAULTS = {'disp':         'G235M',
             'DENOLINE':     'None',
             'MPTUSERLIT':   '',
             'sample_list':  ['CEERs_DR0.9'],
-            'disp_list':    ['comb-mgrat', 'g140m', 'g235m', 'g395m', 'prism'],
+            'disp_list':    ['comb-mgrat', 'prism'],
             'point_list':   ['nirspec4', 'nirspec5', 'nirspec7', 'nirspec8', 'nirspec9', 'nirspec10', 'nirspec11', 'nirspec12']}
 
 
